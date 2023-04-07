@@ -6,17 +6,28 @@ const headers = {
 };
 
 async function requestSignup(email, password) {
-  const res = await axios.post(
-    `${baseURL}/auth/signup`,
-    {
-      email: email,
-      password: password,
-    },
-    {
-      headers: headers,
-    },
-  );
-  console.log(res);
+  const result = {
+    succses: false,
+    message: "",
+  };
+  try {
+    await axios.post(
+      `${baseURL}/auth/signup`,
+      {
+        email: email,
+        password: password,
+      },
+      {
+        headers: headers,
+      },
+    );
+    result.succses = true;
+    result.message = "회원 가입이 성공되었습니다.";
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
 }
 
 export { requestSignup };

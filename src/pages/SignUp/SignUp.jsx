@@ -1,15 +1,28 @@
 import { requestSignup } from "api/api";
+import { useState } from "react";
+import swal from "sweetalert";
 
 function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const trySignUp = async () => {
-    await requestSignup("abc@as", "123");
+    const signupResult = await requestSignup(email, password);
+    swal({
+      icon: signupResult.succses ? "success" : "error",
+      title: signupResult.succses ? "SUCCSESS" : "ERROR!",
+      text: signupResult.message,
+    });
   };
-
   return (
     <div>
       <h1>SignUp</h1>
-
-      <button type="submit" value="Submit" onClick={trySignUp} />
+      <label>email</label>
+      <input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+      <label>password</label>
+      <input type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+      <button type="submit" onClick={trySignUp}>
+        SignUP
+      </button>
     </div>
   );
 }
