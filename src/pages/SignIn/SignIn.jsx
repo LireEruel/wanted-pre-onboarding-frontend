@@ -1,22 +1,23 @@
 import { requestSignIn } from "api/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import swal from "sweetalert";
+import { AuthContext } from "App";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
+  const { onLogin } = useContext(AuthContext);
   const trySignIn = async () => {
     const signupResult = await requestSignIn(email, password);
-    if (signupResult.succses) {
-      localStorage.setItem("access_token", signupResult.access_token);
-    }
-
     swal({
       icon: signupResult.succses ? "success" : "error",
       title: signupResult.succses ? "SUCCSESS" : "ERROR!",
       text: signupResult.message,
     });
+    if (signupResult.succses) {
+      onLogin(signupResult.access_token);
+    }
   };
 
   useEffect(() => {
@@ -46,10 +47,10 @@ function SignIn() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button data-testid="signin-button" type="submit" disabled={disabled} onClick={trySignIn}>
-          SignIn
-        </button>
       </form>
+      <button data-testid="signin-button" type="submit" disabled={disabled} onClick={trySignIn}>
+        SignIn
+      </button>
     </div>
   );
 }
