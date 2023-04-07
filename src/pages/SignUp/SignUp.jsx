@@ -1,4 +1,4 @@
-import { requestSignup } from "api/api";
+import { requestSignUp } from "api/api";
 import { useState } from "react";
 import swal from "sweetalert";
 
@@ -6,7 +6,7 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const trySignUp = async () => {
-    const signupResult = await requestSignup(email, password);
+    const signupResult = await requestSignUp(email, password);
     swal({
       icon: signupResult.succses ? "success" : "error",
       title: signupResult.succses ? "SUCCSESS" : "ERROR!",

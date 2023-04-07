@@ -5,7 +5,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-async function requestSignup(email, password) {
+async function requestSignUp(email, password) {
   const result = {
     succses: false,
     message: "",
@@ -30,4 +30,31 @@ async function requestSignup(email, password) {
   return result;
 }
 
-export { requestSignup };
+async function requestSignIn(email, password) {
+  const result = {
+    succses: false,
+    message: "",
+    access_token: "",
+  };
+  try {
+    const res = await axios.post(
+      `${baseURL}/auth/signin`,
+      {
+        email: email,
+        password: password,
+      },
+      {
+        headers: headers,
+      },
+    );
+    result.succses = true;
+    result.message = "로그인이 성공되었습니다.";
+    result.access_token = res.data.access_token;
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
+}
+
+export { requestSignUp, requestSignIn };
