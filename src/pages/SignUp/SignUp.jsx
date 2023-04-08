@@ -15,7 +15,6 @@ function SignUp() {
     });
   };
   useEffect(() => {
-    console.log(email.search("@"));
     if (email.search("@") > -1 && password.length > 7) {
       setDisabled(false);
     } else {

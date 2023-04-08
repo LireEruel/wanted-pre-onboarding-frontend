@@ -23,9 +23,17 @@ function App() {
   };
 
   const ProtectedRoute = ({ children }) => {
-    if (!access_token) {
-      return <Navigate to="/signin" replace />;
+    const current_location = window.location.pathname;
+    if (current_location == "/todo") {
+      if (!access_token) {
+        return <Navigate to="/signin" replace />;
+      }
+    } else {
+      if (access_token) {
+        return <Navigate to="/todo" replace />;
+      }
     }
+
     return children;
   };
 
@@ -36,8 +44,22 @@ function App() {
     <Router>
       <AuthContext.Provider value={value}>
         <Routes>
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signin" element={<SignIn />} />
+          <Route
+            path="/signup"
+            element={
+              <ProtectedRoute>
+                <SignUp />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <ProtectedRoute>
+                <SignIn />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/todo"
             element={
