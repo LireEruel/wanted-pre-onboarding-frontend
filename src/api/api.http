@@ -1,0 +1,20 @@
+#### /auth/signup
+
+POST https://www.pre-onboarding-selection-task.shop/auth/signup
+Content-Type: application/json
+
+{
+    "email": "abc@abb",
+    "password": "password"
+}
+
+
+### auth/signup
+
+POST https://www.pre-onboarding-selection-task.shop/auth/signin
+Content-Type: application/json
+
+{
+    "email": "abc@abb",
+    "password": "password"
+}
