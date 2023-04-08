@@ -1,8 +1,13 @@
 import axios from "axios";
 
 const baseURL = "https://www.pre-onboarding-selection-task.shop";
-const headers = {
+const default_headers = {
   "Content-Type": "application/json",
+};
+
+const auth_headers = {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem("access_token"),
 };
 
 async function requestSignUp(email, password) {
@@ -18,7 +23,7 @@ async function requestSignUp(email, password) {
         password: password,
       },
       {
-        headers: headers,
+        headers: default_headers,
       },
     );
     result.succses = true;
@@ -44,7 +49,7 @@ async function requestSignIn(email, password) {
         password: password,
       },
       {
-        headers: headers,
+        headers: default_headers,
       },
     );
     result.succses = true;
@@ -57,4 +62,51 @@ async function requestSignIn(email, password) {
   return result;
 }
 
-export { requestSignUp, requestSignIn };
+async function requestCreateTodo(todo) {
+  const result = {
+    succses: false,
+    message: "",
+  };
+
+  try {
+    await axios.post(
+      `${baseURL}/todos`,
+      {
+        todo: todo,
+      },
+      {
+        headers: auth_headers,
+      },
+    );
+    result.succses = true;
+    result.message = "success";
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
+}
+
+async function requestGetTodo() {
+  const result = {
+    succses: false,
+    todos: [],
+    message: "",
+  };
+
+  try {
+    const res = await axios.get(`${baseURL}/todos`, {
+      headers: auth_headers,
+    });
+
+    result.succses = true;
+    result.todos = res.data;
+    result.message = "success";
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
+}
+
+export { requestSignUp, requestSignIn, requestCreateTodo, requestGetTodo };
