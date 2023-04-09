@@ -109,6 +109,35 @@ async function requestGetTodo() {
   return result;
 }
 
+async function requestUpdateTodo(id, todo, isCompleted) {
+  const result = {
+    succses: false,
+    todos: [],
+    message: "",
+  };
+
+  try {
+    const res = await axios.put(
+      `${baseURL}/todos/${id}`,
+      {
+        todo: todo,
+        isCompleted: isCompleted,
+      },
+      {
+        headers: auth_headers,
+      },
+    );
+
+    result.succses = true;
+    result.todos = res.data;
+    result.message = "success";
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
+}
+
 async function requestDeleteTodo(id) {
   const result = {
     succses: false,
@@ -131,4 +160,4 @@ async function requestDeleteTodo(id) {
   return result;
 }
 
-export { requestSignUp, requestSignIn, requestCreateTodo, requestGetTodo, requestDeleteTodo };
+export { requestSignUp, requestSignIn, requestCreateTodo, requestGetTodo, requestUpdateTodo, requestDeleteTodo };

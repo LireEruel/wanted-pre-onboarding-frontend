@@ -5,6 +5,7 @@ import { swal } from "sweetalert";
 const ToDoList = () => {
   const [todos, setTodos] = useState([]);
   const [inputTodo, setInputTodo] = useState("");
+  const [updateModeTodos, setUpdateModeTodos] = useState(new Set());
   useEffect(() => {
     getTodos();
   }, []);
@@ -47,6 +48,16 @@ const ToDoList = () => {
   const modifyTodo = async (key) => {
     console.log(key);
   };
+
+  const setUpdateTodoMode = (id, isUpdateMode) => {
+    const newSet = new Set([...updateModeTodos]);
+    if (isUpdateMode) {
+      newSet.add(id);
+    } else {
+      newSet.delete(id);
+    }
+    setUpdateModeTodos(newSet);
+  };
   return (
     <>
       <h1>TODOLIST</h1>
@@ -63,15 +74,29 @@ const ToDoList = () => {
         {todos.map((todos) => {
           return (
             <li key={todos.id}>
-              <label>
-                <input type="checkbox" value={todos.isCompleted} /> <span>{todos.todo}</span>
-              </label>
-              <button data-testid="modify-button" onClick={() => modifyTodo(todos.id)}>
-                수정
-              </button>
-              <button data-testid="delete-button" onClick={() => deleteTodo(todos.id)}>
-                삭제
-              </button>
+              {updateModeTodos.has(todos.id) ? (
+                <div>
+                  <input data-testid="modify-input" defaultValue={todos.todo} />
+                  <button data-testid="submit-button" onClick={() => modifyTodo(todos.id)}>
+                    제출
+                  </button>
+                  <button data-testid="cancel-button" onClick={() => setUpdateTodoMode(todos.id, false)}>
+                    취소
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <label>
+                    <input type="checkbox" value={todos.isCompleted} /> <span>{todos.todo}</span>
+                  </label>
+                  <button data-testid="modify-button" onClick={() => setUpdateTodoMode(todos.id, true)}>
+                    수정
+                  </button>
+                  <button data-testid="delete-button" onClick={() => deleteTodo(todos.id)}>
+                    삭제
+                  </button>
+                </div>
+              )}
             </li>
           );
         })}
