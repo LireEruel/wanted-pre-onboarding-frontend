@@ -1,4 +1,4 @@
-import { requestGetTodo, requestCreateTodo } from "api/api";
+import { requestGetTodo, requestCreateTodo, requestDeleteTodo } from "api/api";
 import { useEffect, useState } from "react";
 import { swal } from "sweetalert";
 
@@ -30,6 +30,23 @@ const ToDoList = () => {
       }
     }
   };
+
+  const deleteTodo = async (id) => {
+    try {
+      await requestDeleteTodo(id);
+      await getTodos();
+    } catch (e) {
+      swal({
+        icon: "error",
+        title: "create To do ERROR!",
+        text: "create To do",
+      });
+    }
+  };
+
+  const modifyTodo = async (key) => {
+    console.log(key);
+  };
   return (
     <>
       <h1>TODOLIST</h1>
@@ -44,7 +61,19 @@ const ToDoList = () => {
       </form>
       <ul>
         {todos.map((todos) => {
-          return <li key={todos.id}>{todos.todo}</li>;
+          return (
+            <li key={todos.id}>
+              <label>
+                <input type="checkbox" value={todos.isCompleted} /> <span>{todos.todo}</span>
+              </label>
+              <button data-testid="modify-button" onClick={() => modifyTodo(todos.id)}>
+                수정
+              </button>
+              <button data-testid="delete-button" onClick={() => deleteTodo(todos.id)}>
+                삭제
+              </button>
+            </li>
+          );
         })}
       </ul>
     </>

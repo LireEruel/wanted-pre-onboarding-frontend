@@ -109,4 +109,26 @@ async function requestGetTodo() {
   return result;
 }
 
-export { requestSignUp, requestSignIn, requestCreateTodo, requestGetTodo };
+async function requestDeleteTodo(id) {
+  const result = {
+    succses: false,
+    todos: [],
+    message: "",
+  };
+
+  try {
+    const res = await axios.delete(`${baseURL}/todos/${id}`, {
+      headers: auth_headers,
+    });
+
+    result.succses = true;
+    result.todos = res.data;
+    result.message = "success";
+  } catch (e) {
+    result.succses = false;
+    result.message = e.response.data.message;
+  }
+  return result;
+}
+
+export { requestSignUp, requestSignIn, requestCreateTodo, requestGetTodo, requestDeleteTodo };
