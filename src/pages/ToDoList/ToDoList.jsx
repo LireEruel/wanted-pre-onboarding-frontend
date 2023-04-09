@@ -1,11 +1,12 @@
-import { requestGetTodo, requestCreateTodo, requestDeleteTodo } from "api/api";
+import { requestGetTodo, requestCreateTodo, requestDeleteTodo, requestUpdateTodo } from "api/api";
+import _ from "lodash";
 import { useEffect, useState } from "react";
 import { swal } from "sweetalert";
 
 const ToDoList = () => {
   const [todos, setTodos] = useState([]);
   const [inputTodo, setInputTodo] = useState("");
-  const [updateModeTodos, setUpdateModeTodos] = useState(new Set());
+  const [updateTodoInfo, setUpdateTodoInfo] = useState({ id: -1, todo: "", isCompleted: false });
   useEffect(() => {
     getTodos();
   }, []);
@@ -45,18 +46,50 @@ const ToDoList = () => {
     }
   };
 
-  const modifyTodo = async (key) => {
-    console.log(key);
+  const updateTodo = async () => {
+    try {
+      await requestUpdateTodo(updateTodoInfo.id, updateTodoInfo.todo, updateTodoInfo.isCompleted);
+      await getTodos();
+    } catch (e) {
+      swal({
+        icon: "error",
+        title: "create To do ERROR!",
+        text: "create To do",
+      });
+    } finally {
+      setUpdateTodoInfo({ id: -1, isCompleted: false, todo: "" });
+    }
   };
 
-  const setUpdateTodoMode = (id, isUpdateMode) => {
-    const newSet = new Set([...updateModeTodos]);
-    if (isUpdateMode) {
-      newSet.add(id);
-    } else {
-      newSet.delete(id);
+  const changeUpdateTodoInfo = (updateInfo, newValue) => {
+    const newUpdateTodoInfo = _.cloneDeep(updateTodoInfo);
+    switch (updateInfo) {
+      case "todo": {
+        newUpdateTodoInfo.todo = newValue;
+        break;
+      }
+      case "isCompleted": {
+        newUpdateTodoInfo.isCompleted = newValue;
+        break;
+      }
     }
-    setUpdateModeTodos(newSet);
+    setUpdateTodoInfo(newUpdateTodoInfo);
+  };
+  const setUpdateTodoMode = (id, isUpdateMode) => {
+    if (isUpdateMode) {
+      const targetTodo = todos.find((todo) => todo.id === id);
+      setUpdateTodoInfo({
+        id: targetTodo.id,
+        todo: targetTodo.todo,
+        isCompleted: targetTodo.isCompleted,
+      });
+    } else {
+      setUpdateTodoInfo({
+        id: -1,
+        todo: "",
+        isCompleted: false,
+      });
+    }
   };
   return (
     <>
@@ -71,28 +104,39 @@ const ToDoList = () => {
         <input type="submit" data-testid="new-todo-add-button" value="Submit" />
       </form>
       <ul>
-        {todos.map((todos) => {
+        {todos.map((todo) => {
           return (
-            <li key={todos.id}>
-              {updateModeTodos.has(todos.id) ? (
+            <li key={todo.id}>
+              {updateTodoInfo.id == todo.id ? (
                 <div>
-                  <input data-testid="modify-input" defaultValue={todos.todo} />
-                  <button data-testid="submit-button" onClick={() => modifyTodo(todos.id)}>
+                  <input
+                    name="is_completed"
+                    type="checkbox"
+                    checked={updateTodoInfo.isCompleted}
+                    onChange={(e) => changeUpdateTodoInfo("isCompleted", e.target.checked)}
+                  />
+                  <input
+                    name="todo"
+                    data-testid="modify-input"
+                    value={updateTodoInfo.todo}
+                    onChange={(e) => changeUpdateTodoInfo("todo", e.target.value)}
+                  />
+                  <button onClick={updateTodo} data-testid="submit-button">
                     제출
                   </button>
-                  <button data-testid="cancel-button" onClick={() => setUpdateTodoMode(todos.id, false)}>
+                  <button data-testid="cancel-button" onClick={() => setUpdateTodoMode(todo.id, false)}>
                     취소
                   </button>
                 </div>
               ) : (
                 <div>
                   <label>
-                    <input type="checkbox" value={todos.isCompleted} /> <span>{todos.todo}</span>
+                    <input type="checkbox" checked={todo.isCompleted} /> <span>{todo.todo}</span>
                   </label>
-                  <button data-testid="modify-button" onClick={() => setUpdateTodoMode(todos.id, true)}>
+                  <button data-testid="modify-button" onClick={() => setUpdateTodoMode(todo.id, true)}>
                     수정
                   </button>
-                  <button data-testid="delete-button" onClick={() => deleteTodo(todos.id)}>
+                  <button data-testid="delete-button" onClick={() => deleteTodo(todo.id)}>
                     삭제
                   </button>
                 </div>

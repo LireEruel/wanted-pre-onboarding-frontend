@@ -115,6 +115,7 @@ async function requestUpdateTodo(id, todo, isCompleted) {
     todos: [],
     message: "",
   };
+  console.log(isCompleted);
 
   try {
     const res = await axios.put(
