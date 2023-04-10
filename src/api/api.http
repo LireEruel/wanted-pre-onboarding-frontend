@@ -9,7 +9,7 @@ Content-Type: application/json
 }
 
 
-### auth/signup
+### /auth/signup
 
 POST https://www.pre-onboarding-selection-task.shop/auth/signin
 Content-Type: application/json
