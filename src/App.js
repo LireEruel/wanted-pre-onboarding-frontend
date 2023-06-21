@@ -41,7 +41,7 @@ function App() {
     children: PropTypes.node.isRequired,
   };
   return (
-    <Router>
+    <Router basename="/wanted-pre-onboarding-frontend">
       <AuthContext.Provider value={value}>
         <Routes>
           <Route path="/" element={<Home />} />
