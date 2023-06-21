@@ -2,12 +2,19 @@ import { requestSignIn } from "api/api";
 import { useState, useEffect, useContext } from "react";
 import swal from "sweetalert";
 import { AuthContext } from "App";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
   const { onLogin } = useContext(AuthContext);
+
+  const goSignUp = () => {
+    navigate("/signup");
+  };
+
   const trySignIn = async () => {
     const signupResult = await requestSignIn(email, password);
     swal({
@@ -28,9 +35,9 @@ function SignIn() {
     }
   }, [email, password]);
   return (
-    <div>
+    <div style={{ width: "30%", margin: "auto" }}>
       <h1>SignIn</h1>
-      <form>
+      <form style={{ display: "flex", flexDirection: "column" }}>
         <label>email</label>
         <input
           type="email"
@@ -48,9 +55,16 @@ function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </form>
-      <button data-testid="signin-button" type="submit" disabled={disabled} onClick={trySignIn}>
+      <button
+        data-testid="signin-button"
+        type="submit"
+        disabled={disabled}
+        onClick={trySignIn}
+        style={{ marginTop: "20px", marginRight: "20px" }}
+      >
         SignIn
       </button>
+      <button onClick={goSignUp}>go to Sign Up</button>
     </div>
   );
 }
