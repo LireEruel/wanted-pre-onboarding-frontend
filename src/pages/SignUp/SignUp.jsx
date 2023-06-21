@@ -6,6 +6,7 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [disabled, setDisabled] = useState(true);
+
   const trySignUp = async () => {
     const signupResult = await requestSignUp(email, password);
     swal({
@@ -14,6 +15,7 @@ function SignUp() {
       text: signupResult.message,
     });
   };
+
   useEffect(() => {
     if (email.search("@") > -1 && password.length > 7) {
       setDisabled(false);
@@ -21,6 +23,7 @@ function SignUp() {
       setDisabled(true);
     }
   }, [email, password]);
+
   return (
     <div>
       <h1>SignUp</h1>
@@ -42,7 +45,7 @@ function SignUp() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button data-testid="signup-button" type="submit" disabled={disabled} onClick={trySignUp}>
-          SignIn
+          SignUp
         </button>
       </form>
     </div>

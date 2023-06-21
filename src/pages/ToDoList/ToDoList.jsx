@@ -109,12 +109,7 @@ const ToDoList = () => {
             <li key={todo.id}>
               {updateTodoInfo.id == todo.id ? (
                 <div>
-                  <input
-                    name="is_completed"
-                    type="checkbox"
-                    checked={updateTodoInfo.isCompleted}
-                    onChange={(e) => changeUpdateTodoInfo("isCompleted", e.target.checked)}
-                  />
+                  <input name="is_completed" type="checkbox" checked={updateTodoInfo.isCompleted} readOnly />
                   <input
                     name="todo"
                     data-testid="modify-input"
@@ -130,8 +125,13 @@ const ToDoList = () => {
                 </div>
               ) : (
                 <div>
+                  <input
+                    type="checkbox"
+                    checked={todo.isCompleted}
+                    onChange={(e) => changeUpdateTodoInfo("isCompleted", e.target.checked)}
+                  />
                   <label>
-                    <input type="checkbox" checked={todo.isCompleted} /> <span>{todo.todo}</span>
+                    <span>{todo.todo}</span>
                   </label>
                   <button data-testid="modify-button" onClick={() => setUpdateTodoMode(todo.id, true)}>
                     수정

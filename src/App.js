@@ -4,6 +4,7 @@ import SignIn from "pages/SignIn/SignIn";
 import { createContext, useState } from "react";
 import ToDoList from "./pages/ToDoList/ToDoList";
 import PropTypes from "prop-types";
+import Home from "pages/Home/Home";
 
 export const AuthContext = createContext(null);
 function App() {
@@ -33,7 +34,6 @@ function App() {
         return <Navigate to="/todo" replace />;
       }
     }
-
     return children;
   };
 
@@ -44,6 +44,7 @@ function App() {
     <Router>
       <AuthContext.Provider value={value}>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route
             path="/signup"
             element={
